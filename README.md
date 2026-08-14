@@ -1,74 +1,172 @@
 # 🛡️ Network Traffic Analyzer
 
-A real-time Python-based network traffic monitoring and security analysis application with live packet inspection, security threat detection, alert severity classification, and a professional Rich terminal dashboard.
+> **Real-time Python network traffic monitoring and security analysis with live packet inspection, IP filtering, security threat detection, alert management, telemetry, and CSV session export.**
 
-## 🚀 Features
+[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Scapy](https://img.shields.io/badge/Scapy-Packet%20Capture-orange)](https://scapy.net/)
+[![Rich](https://img.shields.io/badge/Rich-Terminal%20Dashboard-purple)](https://rich.readthedocs.io/)
+[![Platform](https://img.shields.io/badge/Platform-Windows-blue)](https://www.microsoft.com/windows)
 
-- Real-time packet capture using Scapy
-- Dual-interface monitoring:
-  - Wi-Fi
-  - Windows Loopback
+## 📌 Overview
+
+**Network Traffic Analyzer** is a Windows-based Python application for real-time network monitoring and security-focused traffic analysis.
+
+The application captures traffic from:
+
+- Wi-Fi
+- Windows Loopback
+
+It provides live visibility into packets, bandwidth, network sources, security alerts, and session history.
+
+## ✨ Features
+
+- Real-time packet capture with Scapy
+- Wi-Fi and Windows Loopback monitoring
+- Optional IP-based traffic filtering
 - Live packet stream
-- Real-time telemetry
-- Packets-per-second graph
-- Bandwidth graph
+- Packets-per-second telemetry
+- Bandwidth monitoring
 - Top network generators
-- Security alert dashboard
+- Plaintext protocol detection
+- HTTP request detection
+- Port scan detection
+- TCP flag anomaly detection
 - Alert severity classification
-- Alert filtering
-- Session and historical alert separation
+- Security alert logging
 - Automatic security-log archiving
-- Backup retention management
-- Clean application shutdown
+- Live Rich terminal dashboard
+- Session CSV export
+- Clean shutdown and final statistics
 
-## 🔐 Security Detectors
+## 🔐 Security Detection
 
-### Plaintext HTTP Detection
+| Detector | Purpose | Severity |
+|---|---|---|
+| Plaintext Traffic | Detects plaintext services such as FTP and TELNET | MEDIUM |
+| HTTP Requests | Detects plaintext HTTP requests | MEDIUM |
+| Port Scan | Detects repeated TCP SYN traffic across multiple destination ports | HIGH |
+| TCP Flag Anomaly | Detects suspicious TCP flag combinations | HIGH |
 
-Detects plaintext HTTP traffic on configured HTTP ports and identifies HTTP requests such as:
+### Supported plaintext services
 
-- GET
-- POST
-- PUT
-- DELETE
-- HEAD
-- OPTIONS
-- PATCH
+- HTTP
+- FTP
+- TELNET
 
-### Port Scan Detection
+### TCP flag anomalies
 
-Detects repeated TCP SYN attempts to multiple destination ports within a configured time window.
+The detector can identify suspicious combinations including:
 
-### TCP Flag Anomaly Detection
+```text
+SYN + FIN
+SYN + RST
+FIN + RST
+```
 
-Detects suspicious TCP flag combinations such as:
+## 🎯 IP Filtering
 
-- SYN + FIN
-- SYN + RST
-- FIN + RST
+At startup the application asks:
 
-## 🎯 Alert Severity
+```text
+IP Address >
+```
 
-| Alert Type | Severity |
-|---|---|
-| Plaintext HTTP | MEDIUM |
-| Port Scan | HIGH |
-| TCP Flag Anomaly | HIGH |
+Press **Enter** to monitor all traffic, or enter a specific IP address.
 
-## 🖥️ Dashboard
+Example:
 
-The terminal dashboard provides:
+```text
+IP Address > 10.62.72.55
+```
 
-- LIVE PACKET STREAM
-- TELEMETRY
-- PACKETS / SECOND
-- BANDWIDTH
-- TOP NETWORK GENERATORS
-- SECURITY SUMMARY
-- RECENT SECURITY ALERTS
-- SYSTEM STATUS
+When an IP is supplied, packets are processed only when the selected IP is the source or destination.
 
-### Alert Filters
+## 🖥️ Application Screenshots
+
+### 1. Startup Interface
+
+The application starts with the custom ASCII title, project information, and IP monitoring prompt.
+
+![Startup Interface](screenshots/startup-interface.png)
+
+### 2. Main Status Interface
+
+After the IP input, the application displays the capture status, enabled security detectors, HTTP test URL, and dashboard loading screen.
+
+![Main Status Interface](screenshots/status-interface.png)
+
+### 3. Live Security Dashboard
+
+The live dashboard provides:
+
+- live packet stream
+- telemetry
+- packets/second graph
+- bandwidth graph
+- top network generators
+- security summary
+- recent security alerts
+- system status
+
+![Live Security Dashboard](screenshots/live-dashboard.png)
+
+### 4. Shutdown, Security Summary & CSV Export
+
+When `Q` is pressed, the application stops both capture threads and displays final statistics and the CSV export prompt.
+
+![Shutdown Summary](screenshots/shutdown-summary.png)
+
+## 🔄 Application Flow
+
+```text
+python main.py
+       │
+       ▼
+STARTUP INTERFACE
+       │
+       ▼
+IP Address >
+       │
+       ├── Enter
+       │     └── Monitor all traffic
+       │
+       └── Enter IP
+             └── Monitor selected IP traffic
+       │
+       ▼
+MAIN STATUS INTERFACE
+       │
+       ▼
+Wi-Fi + Loopback Capture
+       │
+       ▼
+5-Second Dashboard Loading
+       │
+       ▼
+LIVE SECURITY DASHBOARD
+       │
+       ▼
+Security Detection + Telemetry
+       │
+       ▼
+Press Q
+       │
+       ▼
+Capture Stopped
+       │
+       ▼
+Security Alert Summary
+       │
+       ▼
+CSV Export
+       │
+       ▼
+Program Exited Cleanly
+```
+
+## 📊 Live Dashboard
+
+The dashboard includes alert filtering:
 
 ```text
 A → All
@@ -81,104 +179,100 @@ C → Critical
 Navigation:
 
 ```text
-↑ / ↓        Scroll
-PageUp       Previous page
-PageDown     Next page
-Home         First
-End          Last
-Q            Quit
+↑ / ↓       Scroll
+PageUp      Previous page
+PageDown    Next page
+Home        First
+End         Last
+Q           Quit
 ```
+
+## 💾 CSV Export
+
+At shutdown:
+
+```text
+Do you want to save the history as a CSV file? (y/n):
+```
+
+Selecting `y` creates a timestamped file:
+
+```text
+exports/
+└── traffic_history_YYYY-MM-DD_HH-MM-SS.csv
+```
+
+The traffic history contains fields such as:
+
+```text
+time
+source
+destination
+protocol
+source_port
+destination_port
+size_bytes
+interface
+```
+
+Example:
+
+```text
+time,source,destination,protocol,source_port,destination_port,size_bytes,interface
+```
+
+The `exports/` directory is excluded from Git because it contains runtime session data.
+
+## 📝 Security Logging
+
+Security alerts are written to:
+
+```text
+logs/security_alerts.log
+```
+
+Existing logs can be archived into:
+
+```text
+logs/backups/
+```
+
+Runtime logs and backups are excluded from Git.
 
 ## ⚙️ Configuration
 
-Application settings are centralized in:
+Central configuration is stored in:
 
 ```text
 config.py
 ```
 
-This includes:
+It controls items including:
 
-- application name and version
-- network interface names
-- security log location
-- detector enable/disable settings
-- port scan threshold
-- TCP suspicious combinations
-- dashboard refresh rate
+- application settings
+- interface configuration
+- detector settings
+- port-scan threshold
+- port-scan time window
+- alert cooldowns
+- suspicious TCP flag combinations
+- dashboard refresh settings
 - graph settings
 - log backup settings
-- backup retention limit
 
-## 📦 Installation
-
-Clone the repository:
-
-```bash
-git clone <YOUR-GITHUB-REPOSITORY-URL>
-cd NetworkTrafficAnalyzer
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate it on Windows PowerShell:
-
-```powershell
-venv\Scripts\Activate.ps1
-```
-
-Install dependencies:
-
-```powershell
-pip install -r requirements.txt
-```
-
-## ▶️ Run
-
-Start the analyzer with:
-
-```powershell
-python main.py
-```
-
-Administrative privileges may be required for packet capture on Windows.
-
-## 🧪 Security Testing
-
-### HTTP Test
-
-Start a local HTTP server:
-
-```powershell
-python -m http.server 8000
-```
-
-Then, from another terminal:
-
-```powershell
-curl.exe http://127.0.0.1:8000/
-```
-
-### Port Scan Test
-
-The project can be tested locally using TCP SYN packets against:
+The tested port-scan configuration is:
 
 ```text
-127.0.0.1
+Port threshold : 10
+Time window    : 10 seconds
+Alert cooldown : 10 seconds
 ```
 
-### TCP Flag Anomaly Test
-
-The TCP anomaly detector can be tested locally using a SYN + FIN packet.
-
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```text
 NetworkTrafficAnalyzer/
+│
 ├── main.py
 ├── config.py
 ├── alert_manager.py
@@ -189,35 +283,169 @@ NetworkTrafficAnalyzer/
 ├── tcp_flags_detector.py
 ├── requirements.txt
 ├── README.md
+├── screenshots/
+│   ├── startup-interface.png
+│   ├── status-interface.png
+│   ├── live-dashboard.png
+│   └── shutdown-summary.png
 └── .gitignore
+```
+
+## 🧰 Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Python | Core application |
+| Scapy | Packet capture and inspection |
+| Rich | Terminal dashboard and UI |
+| PyFiglet | ASCII title |
+| Threading | Concurrent interface capture |
+| CSV | Traffic history export |
+| Git / GitHub | Version control and hosting |
+
+## 📦 Installation
+
+### 1. Clone the repository
+
+```cmd
+git clone https://github.com/sandeepa-gittech/Network-traffic-analyzer.git
+cd NetworkTrafficAnalyzer
+```
+
+### 2. Create a virtual environment
+
+```cmd
+python -m venv venv
+```
+
+### 3. Activate the environment
+
+```cmd
+venv\Scripts\activate
+```
+
+### 4. Install dependencies
+
+```cmd
+pip install -r requirements.txt
+```
+
+## ▶️ Run
+
+```cmd
+python main.py
+```
+
+> **Windows note:** packet capture requires a compatible packet-capture driver/environment and may require suitable permissions.
+
+## 🧪 Local Security Testing
+
+### Plaintext HTTP
+
+Start a local HTTP server:
+
+```cmd
+python -m http.server 8000
+```
+
+Then generate HTTP traffic:
+
+```cmd
+curl.exe http://127.0.0.1:8000/
+```
+
+Expected detector result:
+
+```text
+PLAINTEXT HTTP
+```
+
+### Port Scan
+
+The configured detector is tested using multiple TCP destination ports against the local machine.
+
+Expected result:
+
+```text
+PORT SCAN
+HIGH
+```
+
+### TCP Flag Anomaly
+
+A controlled SYN + FIN packet can be sent to `127.0.0.1` for local testing.
+
+Expected result:
+
+```text
+TCP FLAG ANOMALY
+HIGH
+```
+
+## ✅ Validation
+
+The project has been tested for:
+
+```text
+✅ Startup interface
+✅ IP input and filtering
+✅ Wi-Fi capture
+✅ Loopback capture
+✅ 5-second dashboard loading
+✅ Live telemetry dashboard
+✅ Plaintext HTTP detection
+✅ Plaintext FTP detection
+✅ Plaintext TELNET detection
+✅ Port scan detection
+✅ TCP flag anomaly detection
+✅ Alert summary
+✅ Security log archiving
+✅ CSV export
+✅ Clean shutdown
 ```
 
 ## 📋 Dependencies
 
-- Python
-- Scapy
-- Rich
+The project uses the packages listed in `requirements.txt`, including:
 
-See `requirements.txt` for the exact package versions.
+```text
+scapy
+rich
+pyfiglet
+```
 
-## 🔒 Logging
+## 🔒 Repository Hygiene
 
-Runtime security logs are intentionally excluded from Git using `.gitignore`.
+The following runtime/development directories are intentionally excluded from Git:
 
-The application supports:
+```text
+venv/
+__pycache__/
+logs/
+backup/
+exports/
+```
 
-- current-session security logs
-- timestamped historical backups
-- configurable backup retention
+This keeps the public repository focused on source code and documentation rather than generated runtime data.
 
 ## 📌 Version
-
-Current version:
 
 ```text
 1.0.0
 ```
 
+## 👨‍💻 Author
+
+**Sandeepa Dilmina**
+
+Copyright © 2026 Sandeepa Dilmina. All rights reserved.
+
 ## 📄 License
 
-Add your preferred license before publishing the repository.
+No open-source license has been selected yet.
+
+Add a license before distributing the project under an open-source license.
+
+## 🔗 Repository
+
+https://github.com/sandeepa-gittech/Network-traffic-analyzer
