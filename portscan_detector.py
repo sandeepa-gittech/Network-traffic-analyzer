@@ -162,24 +162,6 @@ def detect_port_scan(packet):
     )
 
     # ========================================================
-    # DISPLAY INFORMATION
-    # ========================================================
-
-    print(
-        f"[INFO] SYN: {source_ip} -> "
-        f"{destination_ip}:{destination_port}"
-    )
-
-    print(
-        f"Unique destination ports: "
-        f"{unique_ports}"
-    )
-
-    print(
-        f"Window: {window:.2f} seconds"
-    )
-
-    # ========================================================
     # CHECK PORT SCAN THRESHOLD
     # ========================================================
 
@@ -264,9 +246,7 @@ def detect_port_scan(packet):
             f"{unique_ports} unique destination "
             f"ports detected within "
             f"{window:.2f} seconds"
-        ),
-
-        config.PORTSCAN_ALERT_SEVERITY
+        )
     )
 
     # ========================================================

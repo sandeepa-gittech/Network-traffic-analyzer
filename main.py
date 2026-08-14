@@ -1,5 +1,9 @@
 from scapy.all import sniff, conf, IP, TCP, UDP, ICMP
 
+from rich.console import Console
+from rich.text import Text
+from rich.panel import Panel
+
 from alert_manager import AlertManager
 
 from plaintext_detector import (
@@ -26,17 +30,310 @@ from live_dashboard import (
 
 import threading
 import time
+import sys
+import csv
+import os
+from datetime import datetime
 import config
+
+
+# ============================================================
+# TYPEWRITER TEXT OUTPUT
+# ============================================================
+
+TYPEWRITER_DELAY = 0.0015
+
+
+def type_text(
+    text,
+    delay=TYPEWRITER_DELAY
+):
+
+    for character in text:
+
+        sys.stdout.write(
+            character
+        )
+
+        sys.stdout.flush()
+
+        if delay > 0:
+
+            time.sleep(
+                delay
+            )
+
+    sys.stdout.write(
+        "\n"
+    )
+
+    sys.stdout.flush()
+
+
+# ============================================================
+# COLORED TYPEWRITER TEXT OUTPUT
+# ============================================================
+
+def type_text_colored(
+    console,
+    text,
+    style,
+    delay=TYPEWRITER_DELAY
+):
+
+    for character in text:
+
+        console.print(
+            character,
+            style=style,
+            end="",
+            markup=False
+        )
+
+        if delay > 0:
+
+            time.sleep(
+                delay
+            )
+
+    console.print()
+
+
+# ============================================================
+# SAFE SHUTDOWN TYPEWRITER OUTPUT
+# ============================================================
+
+def type_shutdown_text(
+    text,
+    ansi_color="",
+    delay=0.005
+):
+
+    if ansi_color:
+
+        sys.stdout.write(
+            ansi_color
+        )
+
+    for character in text:
+
+        sys.stdout.write(
+            character
+        )
+
+        sys.stdout.flush()
+
+        time.sleep(
+            delay
+        )
+
+    if ansi_color:
+
+        sys.stdout.write(
+            "\033[0m"
+        )
+
+    sys.stdout.write(
+        "\n"
+    )
+
+    sys.stdout.flush()
+
+
+# ============================================================
+# PROFESSIONAL STARTUP INTERFACE
+# ============================================================
+
+def show_startup_interface():
+
+    console = Console()
+
+    # --------------------------------------------------------
+    # Clear current terminal screen
+    # --------------------------------------------------------
+
+    console.clear()
+
+    # --------------------------------------------------------
+    # ASCII TITLE
+    # --------------------------------------------------------
+
+    title = Text()
+
+    title.append(
+        "███╗   ██╗███████╗████████╗██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗        ████████╗██████╗  █████╗ ███████╗███████╗██╗ ██████╗\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "████╗  ██║██╔════╝╚══██╔══╝██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝        ╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔════╝██║██╔════╝\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "██╔██╗ ██║█████╗     ██║   ██║ █╗ ██║██║   ██║██████╔╝█████╔╝            ██║   ██████╔╝███████║█████╗  █████╗  ██║██║     \n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "██║╚██╗██║██╔══╝     ██║   ██║███╗██║██║   ██║██╔══██╗██╔═██╗            ██║   ██╔══██╗██╔══██║██╔══╝  ██╔══╝  ██║██║     \n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "██║ ╚████║███████╗   ██║   ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗           ██║   ██║  ██║██║  ██║██║     ██║     ██║╚██████╗\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "╚═╝  ╚═══╝╚══════╝   ╚═╝    ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝           ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═╝ ╚═════╝",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "\n"
+    )
+
+    title.append(
+        "\n"
+    )
+
+    title.append(
+        " █████╗ ███╗   ██╗  █████╗ ██╗     ██╗   ██╗ ███████╗███████╗██████╗\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "██╔══██╗████╗  ██║ ██╔══██╗██║     ╚██╗ ██╔╝ ╚═══██╔╝██╔════╝██╔══██╗\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "███████║██╔██╗ ██║ ███████║██║      ╚████╔╝    ██╔═╝ █████╗  ██████╔╝\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "██╔══██║██║╚██╗██║ ██╔══██║██║       ╚██╔╝   ██╔═╝   ██╔══╝  ██╔══██╗\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+         "██║  ██║██║ ╚████║ ██║  ██║███████╗   ██║   ███████╗ ███████╗██║  ██║\n",
+        style="bold bright_cyan"
+    )
+
+    title.append(
+        "╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝ ╚══════╝╚═╝  ╚═╝",
+        style="bold bright_cyan"
+    )
+
+
+    # --------------------------------------------------------
+    # INFORMATION
+    # --------------------------------------------------------
+
+    info = Text()
+
+    info.append(
+        "Copyright © 2026 Sandeepa Dilmina. All rights reserved.\n",
+        style="bright_white"
+    )
+
+    info.append(
+        "Real-Time Network Security & Live Cyber Dashboard",
+        style="bright_green"
+    )
+
+    # --------------------------------------------------------
+    # HEADER PANEL
+    # --------------------------------------------------------
+
+    console.print(
+        Panel(
+            title,
+            border_style="cyan",
+            padding=(1, 2)
+        )
+    )
+
+    console.print(
+        Panel(
+            info,
+            border_style="green",
+            padding=(0, 2)
+        )
+    )
+
+    console.print()
+
+    # --------------------------------------------------------
+    # IP INPUT
+    # --------------------------------------------------------
+
+    console.print(
+        "Please enter an IP address to monitor "
+        "(or press Enter for all):",
+        style="bold bright_white"
+    )
+
+    console.print()
+
+    ip_address = console.input(
+        "[bold cyan]IP Address > [/]"
+    ).strip()
+
+    console.print()
+
+    # --------------------------------------------------------
+    # SELECTED IP
+    # --------------------------------------------------------
+
+    if ip_address:
+
+        console.print(
+            Panel(
+                f"Monitoring IP: [bold bright_green]{ip_address}[/]",
+                border_style="green",
+                padding=(0, 2)
+            )
+        )
+
+    else:
+
+        console.print(
+            Panel(
+                "Monitoring [bold bright_green]all network traffic[/]",
+                border_style="green",
+                padding=(0, 2)
+            )
+        )
+
+    console.print()
+
+    # --------------------------------------------------------
+    # LAUNCHING MESSAGE
+    # --------------------------------------------------------
+
+    console.print(
+        "[bold bright_green]Launching interface...[/]"
+    )
+
+    console.print(
+        "[dim](Press 'Q' inside dashboard to exit)[/]"
+    )
+
+    console.print()
+
+    return ip_address
+
+
+MONITOR_IP = show_startup_interface()
 
 
 # ============================================================
 # NETWORK TRAFFIC ANALYZER
 # ============================================================
-
-print("========================================")
-print("     NETWORK TRAFFIC ANALYZER")
-print("========================================")
-
 
 # ============================================================
 # NETWORK INTERFACES
@@ -48,19 +345,6 @@ WIFI_INTERFACE = conf.ifaces.dev_from_name(
 
 LOOPBACK_INTERFACE = conf.ifaces.dev_from_name(
     config.LOOPBACK_INTERFACE_NAME
-)
-
-
-print()
-
-print(
-    "Wi-Fi Interface    :",
-    WIFI_INTERFACE
-)
-
-print(
-    "Loopback Interface :",
-    LOOPBACK_INTERFACE
 )
 
 
@@ -131,6 +415,14 @@ stop_event = threading.Event()
 
 
 # ============================================================
+# SESSION PACKET HISTORY
+# ============================================================
+
+session_history = []
+history_lock = threading.Lock()
+
+
+# ============================================================
 # PACKET ANALYZER
 # ============================================================
 
@@ -138,6 +430,27 @@ def analyze_packet(
     packet,
     interface_name
 ):
+
+    # ========================================================
+    # IP MONITORING FILTER
+    # ========================================================
+
+    if MONITOR_IP:
+
+        if IP not in packet:
+
+            return
+
+        packet_source = packet[IP].src
+        packet_destination = packet[IP].dst
+
+        if (
+            packet_source != MONITOR_IP
+            and
+            packet_destination != MONITOR_IP
+        ):
+
+            return
 
     global total_packets
     global total_bytes
@@ -265,6 +578,31 @@ def analyze_packet(
 
         "interface": interface_name
     })
+
+    # --------------------------------------------------------
+    # Store packet history for optional CSV export
+    # --------------------------------------------------------
+
+    with history_lock:
+
+        session_history.append({
+
+            "time": time.strftime("%H:%M:%S"),
+
+            "source": source_ip,
+
+            "destination": destination_ip,
+
+            "protocol": protocol,
+
+            "source_port": source_port,
+
+            "destination_port": destination_port,
+
+            "size_bytes": len(packet),
+
+            "interface": interface_name
+        })
 
     # ========================================================
     # SECURITY DETECTOR 1
@@ -395,9 +733,8 @@ def capture_interface(
             "STOPPED"
         )
 
-        print(
-            f"[STOPPED] {interface_name} capture"
-        )
+        # Shutdown status is printed by the main thread after
+        # both capture threads have finished.
 
 
 # ============================================================
@@ -427,73 +764,459 @@ def get_alert_count():
     return 0
 
 
+
 # ============================================================
-# START PROGRAM
+# SAVE SESSION HISTORY AS CSV
 # ============================================================
 
-print()
+def save_session_history_to_csv():
 
-print(
-    "Monitoring network traffic..."
-)
+    export_directory = "exports"
 
-print()
+    os.makedirs(
+        export_directory,
+        exist_ok=True
+    )
 
-print(
-    "Security Detectors:"
-)
+    timestamp = datetime.now().strftime(
+        "%Y-%m-%d_%H-%M-%S"
+    )
 
-print(
-    "  [ON] Plaintext Traffic"
-)
+    file_path = os.path.join(
+        export_directory,
+        f"traffic_history_{timestamp}.csv"
+    )
 
-print(
-    "  [ON] HTTP Requests"
-)
+    with history_lock:
 
-print(
-    "  [ON] Port Scan"
-)
+        history = list(
+            session_history
+        )
 
-print(
-    "  [ON] TCP Flag Anomaly"
-)
+    with open(
+        file_path,
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as file:
 
-print()
+        writer = csv.DictWriter(
+            file,
+            fieldnames=[
+                "time",
+                "source",
+                "destination",
+                "protocol",
+                "source_port",
+                "destination_port",
+                "size_bytes",
+                "interface"
+            ]
+        )
 
-print(
-    "AlertManager : ENABLED"
-)
+        writer.writeheader()
 
-print()
+        writer.writerows(
+            history
+        )
 
-print(
-    "Wi-Fi Interface    :",
-    WIFI_INTERFACE
-)
+    return file_path, len(history)
 
-print(
-    "Loopback Interface :",
-    LOOPBACK_INTERFACE
-)
 
-print()
+# ============================================================
+# DASHBOARD LOADING SCREEN
+# ============================================================
 
-print(
-    "HTTP Test URL:"
-)
+def show_dashboard_loading(
+    console,
+    seconds=5
+):
 
-print(
-    "http://127.0.0.1:8000/"
-)
+    # --------------------------------------------------------
+    # Clear the previous interface
+    # --------------------------------------------------------
 
-print()
+    console.clear()
 
-print(
-    "Press Q in the dashboard to quit."
-)
+    # --------------------------------------------------------
+    # Create a Live display so the loading screen is always
+    # centered and refreshed in the same position.
+    # --------------------------------------------------------
 
-print()
+    from rich.live import Live
+
+    with Live(
+        refresh_per_second=10,
+        screen=False
+    ) as live:
+
+        for second in range(
+            1,
+            seconds + 1
+        ):
+
+            progress = (
+                "█" * second
+                + "░" * (
+                    seconds - second
+                )
+            )
+
+            loading_text = Text()
+
+            loading_text.append(
+                "Initializing Live Security Dashboard\n\n",
+                style="bold bright_green"
+            )
+
+            loading_text.append(
+                "Loading: ",
+                style="bright_white"
+            )
+
+            loading_text.append(
+                progress,
+                style="bold bright_cyan"
+            )
+
+            loading_text.append(
+                f"  {second}/{seconds} sec\n\n",
+                style="bright_yellow"
+            )
+
+            if second < seconds:
+
+                loading_text.append(
+                    "Preparing live traffic telemetry...",
+                    style="dim bright_white"
+                )
+
+            else:
+
+                loading_text.append(
+                    "Dashboard ready.",
+                    style="bold bright_green"
+                )
+
+            loading_panel = Panel(
+                loading_text,
+                title="NETWORK TRAFFIC ANALYZER",
+                border_style="cyan",
+                padding=(1, 4)
+            )
+
+            live.update(
+                loading_panel
+            )
+
+            time.sleep(
+                1
+            )
+
+    # --------------------------------------------------------
+    # Final launch message
+    # --------------------------------------------------------
+
+    console.clear()
+
+    console.print(
+        Panel(
+            Text(
+                "Launching live dashboard...",
+                style="bold bright_green",
+                justify="center"
+            ),
+            border_style="green",
+            padding=(1, 4)
+        )
+    )
+
+    time.sleep(
+        0.5
+    )
+
+
+# ============================================================
+# SECOND INTERFACE — MAIN PROGRAM STATUS
+# ============================================================
+
+def show_main_interface():
+
+    # --------------------------------------------------------
+    # Clear the startup interface
+    # --------------------------------------------------------
+
+    console = Console()
+
+    console.clear()
+
+    # --------------------------------------------------------
+    # Color palette
+    # --------------------------------------------------------
+
+    BORDER_STYLE = "cyan"
+    TITLE_STYLE = "bold bright_cyan"
+    INFO_STYLE = "bright_white"
+    MONITOR_STYLE = "bold bright_green"
+    DETECTOR_LABEL_STYLE = "bright_white"
+    DETECTOR_ON_STYLE = "bold bright_green"
+    ALERT_STYLE = "bold bright_green"
+    URL_STYLE = "bold bright_yellow"
+    HINT_STYLE = "dim bright_white"
+    START_STYLE = "bold bright_green"
+    ACTIVE_STYLE = "bold bright_green"
+
+    # --------------------------------------------------------
+    # Main title
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "========================================",
+        BORDER_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "     NETWORK TRAFFIC ANALYZER",
+        TITLE_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "========================================",
+        BORDER_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Interfaces
+    # --------------------------------------------------------
+
+    console.print(
+        Text.assemble(
+            ("Wi-Fi Interface    : ", INFO_STYLE),
+            (str(WIFI_INTERFACE), "bold bright_cyan")
+        )
+    )
+
+    console.print(
+        Text.assemble(
+            ("Loopback Interface : ", INFO_STYLE),
+            (str(LOOPBACK_INTERFACE), "bold bright_magenta")
+        )
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Monitoring
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "Monitoring network traffic...",
+        MONITOR_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Security detectors
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "Security Detectors:",
+        "bold bright_white",
+        0.005
+    )
+
+    console.print(
+        Text.assemble(
+            ("  [ON] ", DETECTOR_ON_STYLE),
+            ("Plaintext Traffic", DETECTOR_LABEL_STYLE)
+        )
+    )
+
+    console.print(
+        Text.assemble(
+            ("  [ON] ", DETECTOR_ON_STYLE),
+            ("HTTP Requests", DETECTOR_LABEL_STYLE)
+        )
+    )
+
+    console.print(
+        Text.assemble(
+            ("  [ON] ", DETECTOR_ON_STYLE),
+            ("Port Scan", DETECTOR_LABEL_STYLE)
+        )
+    )
+
+    console.print(
+        Text.assemble(
+            ("  [ON] ", DETECTOR_ON_STYLE),
+            ("TCP Flag Anomaly", DETECTOR_LABEL_STYLE)
+        )
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Alert manager
+    # --------------------------------------------------------
+
+    console.print(
+        Text.assemble(
+            ("AlertManager : ", INFO_STYLE),
+            ("ENABLED", ALERT_STYLE)
+        )
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # HTTP test URL
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "HTTP Test URL:",
+        URL_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "http://127.0.0.1:8000/",
+        "underline bright_yellow",
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Dashboard hint
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "Press Q in the dashboard to quit.",
+        HINT_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Start capture threads
+    # --------------------------------------------------------
+
+    wifi_thread.start()
+
+    loopback_thread.start()
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    # --------------------------------------------------------
+    # Monitoring banner
+    # --------------------------------------------------------
+
+    type_text_colored(
+        console,
+        "========================================",
+        BORDER_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        " BOTH INTERFACES ARE MONITORING",
+        "bold bright_green",
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "========================================",
+        BORDER_STYLE,
+        0.005
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    console.print(
+        Text.assemble(
+            ("Wi-Fi capture    : ", INFO_STYLE),
+            ("ACTIVE", ACTIVE_STYLE)
+        )
+    )
+
+    console.print(
+        Text.assemble(
+            ("Loopback capture : ", INFO_STYLE),
+            ("ACTIVE", ACTIVE_STYLE)
+        )
+    )
+
+    type_text_colored(
+        console,
+        "",
+        INFO_STYLE,
+        0
+    )
+
+    return console
 
 
 # ============================================================
@@ -535,39 +1258,22 @@ loopback_thread = threading.Thread(
 try:
 
     # --------------------------------------------------------
-    # Start Wi-Fi capture
+    # Show the second interface after the startup screen.
     # --------------------------------------------------------
 
-    wifi_thread.start()
+    console = show_main_interface()
 
     # --------------------------------------------------------
-    # Start Loopback capture
+    # Five-second loading screen before the live dashboard.
     # --------------------------------------------------------
 
-    loopback_thread.start()
-
-    print()
-
-    print("========================================")
-    print(" BOTH INTERFACES ARE MONITORING")
-    print("========================================")
-
-    print()
-
-    print(
-        "Wi-Fi capture    : ACTIVE"
+    show_dashboard_loading(
+        console,
+        seconds=5
     )
 
-    print(
-        "Loopback capture : ACTIVE"
-    )
-
-    print()
-
     # --------------------------------------------------------
-    # Start Rich dashboard
-    #
-    # Press Q in dashboard to return here.
+    # Start the existing live dashboard.
     # --------------------------------------------------------
 
     run_dashboard(
@@ -582,8 +1288,10 @@ try:
 
     print()
 
-    print(
-        "Stopping packet capture..."
+    type_shutdown_text(
+        "Stopping packet capture...",
+        "\033[93m",
+        0.005
     )
 
     # --------------------------------------------------------
@@ -604,6 +1312,23 @@ try:
         timeout=2
     )
 
+    # --------------------------------------------------------
+    # Print thread stop messages after both threads have fully
+    # stopped, preventing terminal output from interleaving.
+    # --------------------------------------------------------
+
+    type_shutdown_text(
+        "[STOPPED] Wi-Fi capture",
+        "\033[92m",
+        0.005
+    )
+
+    type_shutdown_text(
+        "[STOPPED] Loopback capture",
+        "\033[92m",
+        0.005
+    )
+
 
 except KeyboardInterrupt:
 
@@ -613,8 +1338,10 @@ except KeyboardInterrupt:
 
     print()
 
-    print(
-        "Stopping packet capture..."
+    type_shutdown_text(
+        "Stopping packet capture...",
+        "\033[93m",
+        0.005
     )
 
     stop_event.set()
@@ -627,21 +1354,51 @@ except KeyboardInterrupt:
         timeout=2
     )
 
+    type_shutdown_text(
+        "[STOPPED] Wi-Fi capture",
+        "\033[92m",
+        0.005
+    )
+
+    type_shutdown_text(
+        "[STOPPED] Loopback capture",
+        "\033[92m",
+        0.005
+    )
+
 
 finally:
 
     # ========================================================
-    # STOP MESSAGE
+    # COLORED SHUTDOWN / FINAL SUMMARY
     # ========================================================
 
-    print()
-    print()
+    shutdown_console = Console()
 
-    print("========================================")
-    print("       CAPTURE STOPPED")
-    print("========================================")
+    shutdown_console.print()
 
-    print()
+    shutdown_console.print(
+        Text(
+            "========================================",
+            style="bold bright_red"
+        )
+    )
+
+    shutdown_console.print(
+        Text(
+            "       CAPTURE STOPPED",
+            style="bold bright_red"
+        )
+    )
+
+    shutdown_console.print(
+        Text(
+            "========================================",
+            style="bold bright_red"
+        )
+    )
+
+    shutdown_console.print()
 
     # ========================================================
     # FINAL TRAFFIC STATISTICS
@@ -649,110 +1406,141 @@ finally:
 
     with stats_lock:
 
-        final_total_packets = (
-            total_packets
-        )
+        final_total_packets = total_packets
+        final_total_bytes = total_bytes
 
-        final_total_bytes = (
-            total_bytes
-        )
+        final_tcp_packets = tcp_packets
+        final_udp_packets = udp_packets
+        final_icmp_packets = icmp_packets
+        final_other_packets = other_packets
 
-        final_tcp_packets = (
-            tcp_packets
-        )
+        final_wifi_packets = wifi_packets
+        final_loopback_packets = loopback_packets
 
-        final_udp_packets = (
-            udp_packets
+    shutdown_console.print(
+        Text.assemble(
+            ("Total Packets : ", "bold bright_white"),
+            (str(final_total_packets), "bold bright_cyan")
         )
-
-        final_icmp_packets = (
-            icmp_packets
-        )
-
-        final_other_packets = (
-            other_packets
-        )
-
-        final_wifi_packets = (
-            wifi_packets
-        )
-
-        final_loopback_packets = (
-            loopback_packets
-        )
-
-    print(
-        "Total Packets :",
-        final_total_packets
     )
 
-    print(
-        "Total Bytes   :",
-        final_total_bytes
+    shutdown_console.print(
+        Text.assemble(
+            ("Total Bytes   : ", "bold bright_white"),
+            (str(final_total_bytes), "bold bright_cyan")
+        )
     )
 
-    print()
+    shutdown_console.print()
 
     # ========================================================
     # PROTOCOL STATISTICS
     # ========================================================
 
-    print("Protocol Statistics")
-    print("-------------------")
-
-    print(
-        "TCP           :",
-        final_tcp_packets
+    shutdown_console.print(
+        Text(
+            "Protocol Statistics",
+            style="bold bright_blue"
+        )
     )
 
-    print(
-        "UDP           :",
-        final_udp_packets
+    shutdown_console.print(
+        Text(
+            "-------------------",
+            style="bright_blue"
+        )
     )
 
-    print(
-        "ICMP          :",
-        final_icmp_packets
+    shutdown_console.print(
+        Text.assemble(
+            ("TCP           : ", "bright_white"),
+            (str(final_tcp_packets), "bold bright_cyan")
+        )
     )
 
-    print(
-        "Other         :",
-        final_other_packets
+    shutdown_console.print(
+        Text.assemble(
+            ("UDP           : ", "bright_white"),
+            (str(final_udp_packets), "bold bright_cyan")
+        )
     )
 
-    print()
+    shutdown_console.print(
+        Text.assemble(
+            ("ICMP          : ", "bright_white"),
+            (str(final_icmp_packets), "bold bright_cyan")
+        )
+    )
+
+    shutdown_console.print(
+        Text.assemble(
+            ("Other         : ", "bright_white"),
+            (str(final_other_packets), "bold bright_cyan")
+        )
+    )
+
+    shutdown_console.print()
 
     # ========================================================
     # INTERFACE STATISTICS
     # ========================================================
 
-    print("Interface Statistics")
-    print("--------------------")
-
-    print(
-        "Wi-Fi         :",
-        final_wifi_packets
+    shutdown_console.print(
+        Text(
+            "Interface Statistics",
+            style="bold bright_magenta"
+        )
     )
 
-    print(
-        "Loopback      :",
-        final_loopback_packets
+    shutdown_console.print(
+        Text(
+            "--------------------",
+            style="bright_magenta"
+        )
     )
 
-    print()
+    shutdown_console.print(
+        Text.assemble(
+            ("Wi-Fi         : ", "bright_white"),
+            (str(final_wifi_packets), "bold bright_cyan")
+        )
+    )
+
+    shutdown_console.print(
+        Text.assemble(
+            ("Loopback      : ", "bright_white"),
+            (str(final_loopback_packets), "bold bright_magenta")
+        )
+    )
+
+    shutdown_console.print()
 
     # ========================================================
     # ALERT COUNT
     # ========================================================
 
-    print("Security Alerts Generated:")
+    alert_count = get_alert_count()
 
-    print(
-        "Total Alerts  :",
-        get_alert_count()
+    shutdown_console.print(
+        Text(
+            "Security Alerts Generated:",
+            style="bold bright_yellow"
+        )
     )
 
-    print()
+    shutdown_console.print(
+        Text.assemble(
+            ("Total Alerts  : ", "bright_white"),
+            (
+                str(alert_count),
+                "bold bright_red"
+                if alert_count > 0
+                else "bold bright_green"
+            )
+        )
+    )
+
+    shutdown_console.print()
 
     # ========================================================
     # SECURITY SUMMARY
@@ -760,8 +1548,102 @@ finally:
 
     display_summary()
 
-    print()
+    shutdown_console.print()
 
-    print("========================================")
-    print("       PROGRAM EXITED CLEANLY")
-    print("========================================")
+    # ========================================================
+    # OPTIONAL CSV EXPORT
+    # ========================================================
+
+    shutdown_console.print(
+        Text(
+            "Do you want to save the history as a CSV file? (y/n):",
+            style="bold bright_yellow"
+        )
+    )
+
+    save_history = input(
+        "CSV Export > "
+    ).strip().lower()
+
+    if save_history == "y":
+
+        try:
+
+            file_path, exported_count = (
+                save_session_history_to_csv()
+            )
+
+            shutdown_console.print()
+
+            shutdown_console.print(
+                Text(
+                    "[✓] History saved successfully.",
+                    style="bold bright_green"
+                )
+            )
+
+            shutdown_console.print(
+                Text.assemble(
+                    ("[✓] CSV file: ", "bright_white"),
+                    (file_path, "bold bright_cyan")
+                )
+            )
+
+            shutdown_console.print(
+                Text.assemble(
+                    ("[✓] Exported packets: ", "bright_white"),
+                    (str(exported_count), "bold bright_cyan")
+                )
+            )
+
+        except Exception as error:
+
+            shutdown_console.print()
+
+            shutdown_console.print(
+                Text(
+                    "[ERROR] Could not save CSV history.",
+                    style="bold bright_red"
+                )
+            )
+
+            shutdown_console.print(
+                Text(
+                    str(error),
+                    style="bright_red"
+                )
+            )
+
+    else:
+
+        shutdown_console.print()
+
+        shutdown_console.print(
+            Text(
+                "Session ended without saving.",
+                style="dim bright_white"
+            )
+        )
+
+    shutdown_console.print()
+
+    shutdown_console.print(
+        Text(
+            "========================================",
+            style="bold bright_green"
+        )
+    )
+
+    shutdown_console.print(
+        Text(
+            "       PROGRAM EXITED CLEANLY",
+            style="bold bright_green"
+        )
+    )
+
+    shutdown_console.print(
+        Text(
+            "========================================",
+            style="bold bright_green"
+        )
+    )

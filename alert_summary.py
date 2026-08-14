@@ -87,6 +87,10 @@ def display_summary():
 
     print()
 
+    # --------------------------------------------------------
+    # PLAINTEXT ALERTS
+    # --------------------------------------------------------
+
     print(
         "PLAINTEXT HTTP     :",
         counts.get(
@@ -94,6 +98,26 @@ def display_summary():
             0
         )
     )
+
+    print(
+        "PLAINTEXT FTP      :",
+        counts.get(
+            "PLAINTEXT FTP",
+            0
+        )
+    )
+
+    print(
+        "PLAINTEXT TELNET   :",
+        counts.get(
+            "PLAINTEXT TELNET",
+            0
+        )
+    )
+
+    # --------------------------------------------------------
+    # SECURITY DETECTORS
+    # --------------------------------------------------------
 
     print(
         "PORT SCAN          :",
