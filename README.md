@@ -81,40 +81,30 @@ IP Address > 10.62.72.55
 
 When an IP is supplied, packets are processed only when the selected IP is the source or destination.
 
-## 🖥️ Application Screenshots
+## 🎥 Project Demo
 
-### 1. Startup Interface
+Watch the complete **Network Traffic Analyzer** workflow:
 
-The application starts with the custom ASCII title, project information, and IP monitoring prompt.
+**Startup Interface → IP Filtering → Network Capture → Live Security Dashboard → Security Detection → Shutdown → CSV Export**
 
-![Startup Interface](screenshots/startup-interface.png)
+### Demo Video
 
-### 2. Main Status Interface
+[▶️ Watch the Network Traffic Analyzer Demo](demo/network-traffic-analyzer-demo.mp4)
 
-After the IP input, the application displays the capture status, enabled security detectors, HTTP test URL, and dashboard loading screen.
+The demonstration shows:
 
-![Main Status Interface](screenshots/status-interface.png)
-
-### 3. Live Security Dashboard
-
-The live dashboard provides:
-
-- live packet stream
-- telemetry
-- packets/second graph
-- bandwidth graph
-- top network generators
-- security summary
-- recent security alerts
-- system status
-
-![Live Security Dashboard](screenshots/live-dashboard.png)
-
-### 4. Shutdown, Security Summary & CSV Export
-
-When `Q` is pressed, the application stops both capture threads and displays final statistics and the CSV export prompt.
-
-![Shutdown Summary](screenshots/shutdown-summary.png)
+- Custom startup interface
+- IP address monitoring
+- Wi-Fi and Loopback capture
+- Live packet telemetry
+- Packets/second monitoring
+- Bandwidth monitoring
+- Security alerts
+- Port scan detection
+- TCP flag anomaly detection
+- Clean shutdown
+- Security alert summary
+- CSV traffic-history export
 
 ## 🔄 Application Flow
 
