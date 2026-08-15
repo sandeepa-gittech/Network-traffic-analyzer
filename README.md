@@ -1,3 +1,7 @@
+
+
+
+
 # 🛡️ Network Traffic Analyzer
 
 > **Real-time Python network traffic monitoring and security analysis with live packet inspection, IP filtering, security threat detection, alert management, telemetry, and CSV session export.**
@@ -89,7 +93,7 @@ Watch the complete **Network Traffic Analyzer** workflow:
 
 ### Demo Video
 
-[▶️ Watch the Network Traffic Analyzer Demo](demo/network-traffic-analyzer-demo.mp4)
+https://github.com/user-attachments/assets/c2bfe298-e24d-4eec-a103-2a8133529fe8
 
 The demonstration shows:
 
