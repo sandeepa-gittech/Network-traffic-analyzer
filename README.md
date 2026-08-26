@@ -48,7 +48,7 @@ It provides live visibility into packets, bandwidth, network sources, security a
 |---|---|---|
 | Plaintext Traffic | Detects plaintext services such as FTP and TELNET | MEDIUM |
 | HTTP Requests | Detects plaintext HTTP requests | MEDIUM |
-| Port Scan | Detects repeated TCP SYN traffic across multiple destination ports | HIGH |
+| Port Scan | Detects repeated TCP SYN traffic across multiple destination ports | MEDIUM |
 | TCP Flag Anomaly | Detects suspicious TCP flag combinations | HIGH |
 
 ### Supported plaintext services
@@ -362,7 +362,7 @@ Expected result:
 
 ```text
 PORT SCAN
-HIGH
+MEDIUM
 ```
 
 ### TCP Flag Anomaly
